@@ -15,14 +15,13 @@
 
 import abc
 import base64
-import django.conf
-import django.template
-import django.template.loader
 import functools
 
 import json
 import webapp2
 from webapp2_extras import jinja2
+from google.appengine.ext.webapp import template
+from google.appengine.ext.webapp import util
 
 import api_fixer
 import constants
@@ -32,13 +31,6 @@ import xsrf
 
 from google.appengine.api import memcache
 from google.appengine.api import users
-
-
-# Django initialization.
-django.conf.settings.configure(DEBUG=constants.DEBUG,
-                               TEMPLATE_DEBUG=constants.DEBUG,
-                               TEMPLATE_DIRS=[constants.TEMPLATE_DIR])
-
 
 # Assorted decorators that can be used inside a webapp2.RequestHandler object
 # to assert certain preconditions before entering any method.
@@ -273,7 +265,7 @@ class BaseHandler(webapp2.RequestHandler):
     """
     return jinja2.get_jinja2(self.j2_factory, app=self.app)
 
-  def render_to_string(self, template, template_values=None):
+  def render_to_string(self, string_template, template_values=None):
     """Renders template_name with template_values and returns as a string."""
     if not template_values:
       template_values = {}
@@ -282,15 +274,7 @@ class BaseHandler(webapp2.RequestHandler):
     template_values['_csp_nonce'] = self.csp_nonce
     template_strategy = self.app.config.get('template', constants.CLOSURE)
 
-    if template_strategy == constants.DJANGO:
-      t = django.template.loader.get_template(template)
-      template_values = django.template.Context(template_values)
-      return t.render(template_values)
-    elif template_strategy == constants.JINJA2:
-      return self.jinja2.render_template(template, **template_values)
-    else:
-      ijdata = { 'csp_nonce': self.csp_nonce }
-      return template(template_values, ijdata)
+    return template.render(string_template, template_values)
 
   def render(self, template, template_values=None):
     """Renders template with template_values and writes to the response."""

@@ -13,6 +13,7 @@
 #     limitations under the License.
 import json
 import logging
+import os
 
 from base import handlers
 
@@ -20,7 +21,9 @@ from base import handlers
 class RootHandler(handlers.BaseHandler):
 
   def get(self):
-    self.redirect('/static/index.html')
+    template_values = {}
+    path = os.path.abspath('index.html')
+    self.render(path, template_values)
 
 class CspHandler(handlers.BaseAjaxHandler):
 

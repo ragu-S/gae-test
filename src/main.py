@@ -22,23 +22,18 @@ import base.constants
 import handlers
 
 # Example handlers
-from examples import example_handlers
+# from examples import example_handlers
 
 
 # These should all inherit from base.handlers.BaseHandler
-_UNAUTHENTICATED_ROUTES = [('/', handlers.RootHandler),
-                           ('/examples/xss',
-                            example_handlers.ClosureXssHandler),
-                           ('/examples/jinja',
-                            example_handlers.JinjaXssHandler),
-                           ('/examples/csp', example_handlers.CspHandler),
-                           ('/examples/xssi', example_handlers.XssiHandler)]
+_UNAUTHENTICATED_ROUTES = [('/', handlers.RootHandler)
+                            ]
 
 # These should all inherit from base.handlers.BaseAjaxHandler
 _UNAUTHENTICATED_AJAX_ROUTES = [('/csp', handlers.CspHandler)]
 
 # These should all inherit from base.handlers.AuthenticatedHandler
-_USER_ROUTES = [('/examples/xsrf', example_handlers.XsrfHandler)]
+_USER_ROUTES = []#[('/examples/xsrf', example_handlers.XsrfHandler)]
 
 # These should all inherit from base.handlers.AuthenticatedAjaxHandler
 _AJAX_ROUTES = []

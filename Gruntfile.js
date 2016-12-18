@@ -13,57 +13,13 @@ module.exports = function(grunt) {
           port: 8080
         },
         runScript: [process.env.HOME,
-                    'bin', 'google_appengine', 'dev_appserver.py'].join('/')
+                    'bin', 'google_appengine', 'bin', 'dev_appserver.py'].join('/')
       }
     },
 
     build: grunt.file.readJSON('config.json'),
 
     clean: [targetDirectory],
-
-    closureBuilder: {
-      options: {
-        closureLibraryPath: 'closure-library',
-        compile: true,
-        compilerFile: ['closure-compiler', 'target',
-                       'closure-compiler-v20160517.jar'].join('/'),
-        compilerOpts: {
-          compilation_level: grunt.option('dev') ?
-            'SIMPLE_OPTIMIZATIONS' : 'ADVANCED_OPTIMIZATIONS'
-        },
-        namespaces: 'app',
-      },
-      js: {
-        src: ['closure-library', 'js',
-              [targetDirectory, 'generated', 'js'].join('/')],
-        dest: [targetDirectory, 'static', 'app.js'].join('/'),
-      }
-    },
-
-    closureSoys: {
-      js: {
-        src: ['templates', 'soy', '**', '*.soy'].join('/'),
-        soyToJsJarPath: ['closure-templates', 'target',
-                         'soy-2016-08-25-SoyToJsSrcCompiler.jar'].join('/'),
-        outputPathFormat: [targetDirectory, 'generated', 'js',
-                           'app.soy.js'].join('/'),
-        options: {
-          allowExternalCalls: false,
-          shouldGenerateJsdoc: true,
-          shouldProvideRequireSoyNamespaces: true
-        }
-      },
-      py: {
-        src: ['templates', 'soy', '**', '*.soy'].join('/'),
-        soyToJsJarPath: ['closure-templates', 'target',
-                         'soy-2016-08-25-SoyToPySrcCompiler.jar'].join('/'),
-        outputPathFormat: [targetDirectory, 'generated',
-                           '{INPUT_FILE_NAME_NO_EXT}.py'].join('/'),
-        options: {
-          runtimePath: 'soy',
-        }
-      }
-    },
 
     copy: {
       source: {
@@ -72,24 +28,17 @@ module.exports = function(grunt) {
         expand: true,
         src: '**'
       },
-      soyutils_js: {
-        cwd: ['closure-templates', 'javascript'].join('/'),
-        dest: [targetDirectory, 'generated', 'js'].join('/'),
-        expand: true,
-        src: 'soyutils_usegoog.js'
-      },
-      soyutils_py: {
-        cwd: ['closure-templates', 'python'].join('/'),
-        dest: [targetDirectory, 'soy', ''].join('/'),
-        expand: true,
-        src: '*.py'
-      },
-
       static: {
         cwd: 'static',
         dest: [targetDirectory, 'static', ''].join('/'),
         expand: true,
         src: '**'
+      },
+      indexFile: {
+        cwd: 'static',
+        dest: [targetDirectory, ''].join('/'),
+        expand: true,
+        src: 'index.html'
       },
       templates: {
         cwd: 'templates',
@@ -115,8 +64,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-appengine');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-closure-soy');
-  grunt.loadNpmTasks('grunt-closure-tools');
 
   grunt.registerTask('init_py', 'Generates __init__.py', function(dir) {
     grunt.file.write([targetDirectory, dir, '__init__.py'].join('/'),
@@ -169,21 +116,8 @@ module.exports = function(grunt) {
         });
 
   grunt.registerTask('default',
-      ['copy:source', 'copy:static', 'copy:templates',
+      ['copy:source', 'copy:static', 'copy:indexFile', 'copy:templates',
        'copy:third_party_js', 'copy:third_party_py',
-      grunt.config.get('build.use_closure_templates') ?
-                       'copy:soyutils_js' : 'nop',
-      grunt.config.get('build.use_closure_templates') ?
-                       'closureSoys:js' : 'nop',
-      grunt.config.get('build.use_closure') ? 'closureBuilder' : 'nop',
-      grunt.config.get('build.use_closure_py_templates') ?
-                       'copy:soyutils_py' : 'nop',
-      grunt.config.get('build.use_closure_py_templates') ?
-                       'init_py:soy' : 'nop',
-      grunt.config.get('build.use_closure_py_templates') ?
-                       'init_py:generated' : 'nop',
-      grunt.config.get('build.use_closure_py_templates') ?
-                       'closureSoys:py' : 'nop',
       'yaml']);
 };
 

@@ -8,5 +8,11 @@
     "grunt-contrib-copy": "~1.0.0",
     "grunt-closure-soy": "~0.2.1",
     "grunt-closure-tools": "~0.9.9"
+  },
+  "scripts": {
+    "copy-SPA-files-and-folders": "cp -r /Volumes/disk2s1/javascript/prj-oreo-dunk/build/* ./static/",
+    "run-project-script-release": "cd /Volumes/disk2s1/javascript/prj-oreo-dunk && npm run release-staging && cd /Volumes/disk2s1/javascript/GoogleCloudApps/gae-secure-scaffold-python",
+    "start": "npm run run-project-script-release && npm run copy-SPA-files-and-folders && grunt clean && grunt && grunt appengine:run:app",
+    "start-no-copy": "grunt clean && grunt && grunt appengine:run:app"
   }
 }

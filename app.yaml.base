@@ -18,7 +18,7 @@ api_version: 1
 threadsafe: true
 
 handlers:
-        - url: /static/
+        - url: /.*
           static_dir: static/
           secure: always
           http_headers:
@@ -36,9 +36,6 @@ handlers:
           secure: always
 
 libraries:
-        - name: django
-          version: latest
-
         - name: jinja2
           version: latest
 
