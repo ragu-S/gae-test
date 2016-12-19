@@ -30,7 +30,7 @@ _UNAUTHENTICATED_ROUTES = [('/', handlers.RootHandler)
                             ]
 
 # These should all inherit from base.handlers.BaseAjaxHandler
-_UNAUTHENTICATED_AJAX_ROUTES = [('/csp', handlers.CspHandler)]
+_UNAUTHENTICATED_AJAX_ROUTES = [('/c', handlers.CspHandler)]
 
 # These should all inherit from base.handlers.AuthenticatedHandler
 _USER_ROUTES = []#[('/examples/xsrf', example_handlers.XsrfHandler)]

@@ -8,12 +8,12 @@ module.exports = function(grunt) {
       app: {
         root: targetDirectory,
         manageScript: [process.env.HOME,
-                       'bin', 'google_appengine', 'appcfg.py'].join('/'),
+                      'bin', 'google-cloud-sdk', 'bin','gcloud'].join('/'),
         runFlags: {
           port: 8080
         },
         runScript: [process.env.HOME,
-                    'bin', 'google_appengine', 'bin', 'dev_appserver.py'].join('/')
+                    'bin', 'google-cloud-sdk', 'bin', 'dev_appserver.py'].join('/')
       }
     },
 
